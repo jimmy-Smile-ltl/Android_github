@@ -8,14 +8,14 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Empty_try">
-        <activity android:name=".MainActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+        android:theme="@style/Theme.Empty_try">
+        <activity android:name=".huilv"  android:exported="true"></activity>
+        <activity android:name=".hello"  android:exported="true"></activity>
+        <activity android:name=".score"  android:exported="true"></activity>
+        <activity android:name=".two_scorer1"  android:exported="true"></activity>
+        <activity android:name=".two_scorers"  android:exported="true"></activity>
+
     </application>
 
 </manifest>
