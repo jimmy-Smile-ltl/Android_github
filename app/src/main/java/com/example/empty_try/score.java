@@ -12,6 +12,10 @@ import androidx.appcompat.app.AppCompatActivity;
  * positioan: com.example.empty_try
  * e-mail:jimmysmileltl@163.com
  **/
+
+/**
+ * ghadgaj
+ */
 public class score extends AppCompatActivity {
 int score=0;
     @Override
