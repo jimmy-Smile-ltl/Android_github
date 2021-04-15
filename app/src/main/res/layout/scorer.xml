@@ -6,13 +6,14 @@
     android:layout_height="match_parent"
 
     >
+
     <TextView
         android:id="@+id/textView"
-        android:layout_gravity="center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="Scorer" />
+        android:layout_gravity="center"
+        android:text="Scorer"
+        app:layout_constraintBottom_toTopOf="@+id/b" />
 
     <LinearLayout
         android:id="@+id/b"
@@ -63,6 +64,8 @@
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif-medium"
             android:onClick="add3"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
             android:text="+3" />
 
         <Button
