@@ -1,6 +1,8 @@
 package com.example.empty_try;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -9,17 +11,18 @@ import android.widget.EditText;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class configActivity extends AppCompatActivity {
-    public final String TAG = "aaaa";
+    public final String TAG = "bbbbbbbbb";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_config);
+
         Intent in = getIntent();
-        double usdRate = in.getDoubleExtra("usd_save", 1.0);
-        double eurRate = in.getDoubleExtra("eur_save", 2.0);
-        double janpRate = in.getDoubleExtra("janp_save", 3.0);
-        double hkRate = in.getDoubleExtra("hk_save", 4.0);
+        float usdRate = in.getFloatExtra("usd_save", 1.0f);
+        float eurRate = in.getFloatExtra("eur_save", 2.0f);
+        float janpRate = in.getFloatExtra("janp_save", 3.0f);
+        float hkRate = in.getFloatExtra("hk_save", 4.0f);
         Log.i(TAG, "onCreate: " + usdRate);
 
         EditText us = findViewById(R.id.us_save);
@@ -42,20 +45,35 @@ public class configActivity extends AppCompatActivity {
         EditText hk = findViewById(R.id.hk_save);
         EditText janp = findViewById(R.id.janp_save);
 
-        double musd = Double.valueOf(String.valueOf(us.getText()));
-        double meur = Double.valueOf(String.valueOf(eur.getText()));
-        double mjanp = Double.valueOf(String.valueOf(janp.getText()));
-        double mhk = Double.valueOf(String.valueOf(hk.getText()));
+        float musd = Float.parseFloat(String.valueOf(us.getText()));
+        float meur = Float.parseFloat(String.valueOf(eur.getText()));
+        float mjanp = Float.parseFloat(String.valueOf(janp.getText()));
+        float mhk = Float.parseFloat(String.valueOf(hk.getText()));
+
+
+        SharedPreferences share = getSharedPreferences("myrate", Activity.MODE_PRIVATE);
+        SharedPreferences.Editor editor_save = share.edit();
+        editor_save.putFloat("usRate", musd);
+        editor_save.putFloat("janpRate", mjanp);
+        editor_save.putFloat("eurRate", meur);
+        editor_save.putFloat("hkRate", mhk);
+        editor_save.apply();
+
+        Log.i(TAG, "hkrate=" + mhk);
+        Log.i(TAG, "janprate=" + mjanp);
+        Log.i(TAG, "usdrate=" + musd);
+        Log.i(TAG, "eurrate=" + meur);
 
         Intent re = getIntent();
         Bundle bd1 = new Bundle();
-        bd1.putDouble("usd", musd);
-        bd1.putDouble("eur", meur);
-        bd1.putDouble("janp", mjanp);
-        bd1.putDouble("hk", mhk);
+        bd1.putFloat("usd", musd);
+        bd1.putFloat("eur", meur);
+        bd1.putFloat("janp", mjanp);
+        bd1.putFloat("hk", mhk);
         re.putExtras(bd1);
         setResult(2, re);
         finish();
+
 
     }
 }
@@ -64,10 +82,10 @@ public class configActivity extends AppCompatActivity {
  * EditText eur=findViewById(R.id.eur_save);
  * EditText hk=findViewById(R.id.hk_save);
  * EditText janp=findViewById(R.id.janp_save);
- * double musd=Double.valueOf(String.valueOf(us.getText()));
- * double meur=Double.valueOf(String.valueOf(eur.getText()));
- * double mjanp=Double.valueOf(String.valueOf(janp.getText()));
- * double mhk=Double.valueOf(String.valueOf(hk.getText()));
+ * float musd=float.valueOf(String.valueOf(us.getText()));
+ * float meur=float.valueOf(String.valueOf(eur.getText()));
+ * float mjanp=float.valueOf(String.valueOf(janp.getText()));
+ * float mhk=float.valueOf(String.valueOf(hk.getText()));
  * config.putExtra("usd_save",musd);
  * config.putExtra("eur_save",meur);
  * config.putExtra("janp_save",mjanp);
