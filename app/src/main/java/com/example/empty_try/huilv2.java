@@ -1,4 +1,5 @@
 package com.example.empty_try;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -15,12 +16,15 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 
 public class huilv2 extends AppCompatActivity implements Runnable {
@@ -66,20 +70,79 @@ public class huilv2 extends AppCompatActivity implements Runnable {
     }
 
     public void run() {
+        //try {
+//            url = new URL("https://www.boc.cn/sourcedb/whpj/");
+//            HttpURLConnection http = (HttpURLConnection) url.openConnection();
+//            InputStream in = http.getInputStream();
+//            String html = htmlString(in);
+//            Log.i(TAG, "run: htm1 = " + html);
+//            Message msg = handler.obtainMessage(1);
+//            msg.obj = html;
+//            handler.sendMessage(msg);
+//        } catch (MalformedURLException e) {
+//            e.printStackTrace();
+//        } catch (IOException e) {
+//            e.printStackTrace();
         try {
-            url = new URL("https://www.boc.cn/sourcedb/whpj/");
-            HttpURLConnection http = (HttpURLConnection) url.openConnection();
-            InputStream in = http.getInputStream();
-            String html = htmlString(in);
-            Log.i(TAG, "run: htm1 = " + html);
-            Message msg = handler.obtainMessage(1);
-            msg.obj = html;
-            handler.sendMessage(msg);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
+            Document doc = Jsoup.connect("https://www.boc.cn/sourcedb/whpj").get();
+            Log.i(TAG, "run: " + doc.title());
+            Elements tables = doc.getElementsByTag("table");
+            Element table = tables.get(1);
+            Elements trs = table.getElementsByTag("tr");
+//            int count=0;
+            for (Element tr : trs) {
+//                count++;
+//                Log.i(TAG, "run: "+count);
+//                Elements tds = tr.getElementsByTag("td");
+//                for (int i = 0; i < tds.size(); i+=8) {
+//                    Element td1 = tds.get(i);
+//                    Element td2 = tds.get(i+5);
+//                    String str1 = td1.text();
+//                    String str2 = td2.text();
+//
+//                    Log.i(TAG, "run: " + str1 +"=====>>" +str2);
+//                }
+                Element trUS = trs.get(26);
+                Element trJANP = trs.get(12);
+                Element trHK = trs.get(9);
+                Element trEUR = trs.get(8);
+
+                Elements tdsUS = trUS.getElementsByTag("td");
+                Elements tdsJANP = trJANP.getElementsByTag("td");
+                Elements tdsHK = trHK.getElementsByTag("td");
+                Elements tdsEUR = trEUR.getElementsByTag("td");
+
+                String rateUS = tdsUS.get(5).text();
+                String rateJANP = tdsJANP.get(5).text();
+                String rateHK = tdsHK.get(5).text();
+                String rateEUR = tdsEUR.get(5).text();
+
+                musd = Float.parseFloat(rateUS) / 100;
+                mjanp = Float.parseFloat(rateJANP) / 100;
+                mhk = Float.parseFloat(rateHK) / 100;
+                meur = Float.parseFloat(rateEUR) / 100;
+
+                Log.i(TAG, "run: " + "美元汇率：" + rateUS + "\n 欧元汇率 ： " + rateEUR + "\n 港币汇率 ：" + rateHK + "\n 日元汇率" + rateJANP);
+                //需要全部除以100；
+
+            }
+
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void open(View v) {
+        Intent config = new Intent(this, configActivity.class);
+        config.putExtra("usd_save", musd);
+        config.putExtra("eur_save", meur);
+        config.putExtra("janp_save", mjanp);
+        config.putExtra("hk_save", mhk);
+        Log.i(TAG, "run: float" + musd);
+        Log.i(TAG, "run: float" + meur);
+        Log.i(TAG, "run: float" + mjanp);
+        Log.i(TAG, "run: float" + mhk);
+        startActivityForResult(config, 1);
     }
 
     private String htmlString(InputStream inputStream) throws IOException {
@@ -100,37 +163,38 @@ public class huilv2 extends AppCompatActivity implements Runnable {
     public void jisuan(View btn) {
         et = findViewById(R.id.rmb);
         out = findViewById(R.id.output);
-        String foreignB = String.valueOf(et.getText());
-        float money = Float.parseFloat(foreignB);
+        String foreignB = et.getText().toString();
+        float money = 0.0f;
         float temp = 0.0f;
         if (foreignB.length() > 0) {
-            if (btn.getId() == R.id.usd)
-                temp = money / musd;
+            money = Float.parseFloat(foreignB);
+        }
+        if (btn.getId() == R.id.usd) {
+            temp = money / musd;
             out.setText(String.valueOf(temp));
-            if (btn.getId() == R.id.hk)
-                temp = money / mhk;
+        } else if (btn.getId() == R.id.hk) {
+            temp = money / mhk;
             out.setText(String.valueOf(temp));
-            if (btn.getId() == R.id.japanse)
-                temp = money / mjanp;
+        } else if (btn.getId() == R.id.japanse) {
+            temp = money / mjanp;
             out.setText(String.valueOf(temp));
-            if (btn.getId() == R.id.eur)
-                temp = money / meur;
+        } else if (btn.getId() == R.id.eur) {
+            temp = money / meur;
             out.setText(String.valueOf(temp));
         } else
             out.setHint("请输入具体数据");
-
     }
 
 
-    public void open(View v) {
-        Intent config = new Intent(this, configActivity.class);
-        config.putExtra("usd_save", musd);
-        config.putExtra("eur_save", meur);
-        config.putExtra("janp_save", mjanp);
-        config.putExtra("hk_save", mhk);
-        startActivityForResult(config, 1);
+//    public void open(View v) {
+//        Intent config = new Intent(this, configActivity.class);
+//        config.putExtra("usd_save", musd);
+//        config.putExtra("eur_save", meur);
+//        config.putExtra("janp_save", mjanp);
+//        config.putExtra("hk_save", mhk);
+//        startActivityForResult(config, 1);
 
-    }
+//    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {

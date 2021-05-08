@@ -23,7 +23,11 @@ public class configActivity extends AppCompatActivity {
         float eurRate = in.getFloatExtra("eur_save", 2.0f);
         float janpRate = in.getFloatExtra("janp_save", 3.0f);
         float hkRate = in.getFloatExtra("hk_save", 4.0f);
-        Log.i(TAG, "onCreate: " + usdRate);
+        Log.i(TAG, "bbbbbbbb: 美元" + usdRate);
+        Log.i(TAG, "bbbbbbbb: 欧元 " + eurRate);
+        Log.i(TAG, "bbbbbbbb: 日元" + janpRate);
+        Log.i(TAG, "bbbbbbbb: 港币" + hkRate);
+
 
         EditText us = findViewById(R.id.us_save);
         EditText eur = findViewById(R.id.eur_save);
