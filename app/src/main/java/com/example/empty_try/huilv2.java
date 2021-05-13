@@ -26,6 +26,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URL;
+import java.util.Date;
 
 public class huilv2 extends AppCompatActivity implements Runnable {
     private static final String TAG = "aaaaaaa";
@@ -36,7 +37,7 @@ public class huilv2 extends AppCompatActivity implements Runnable {
     float musd = 6.5f;
     float mhk = 0.8373f;
     URL url = null;
-
+    String updateTime;
     Handler handler;
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +71,7 @@ public class huilv2 extends AppCompatActivity implements Runnable {
     }
 
     public void run() {
+
         //try {
 //            url = new URL("https://www.boc.cn/sourcedb/whpj/");
 //            HttpURLConnection http = (HttpURLConnection) url.openConnection();
@@ -83,14 +85,22 @@ public class huilv2 extends AppCompatActivity implements Runnable {
 //            e.printStackTrace();
 //        } catch (IOException e) {
 //            e.printStackTrace();
-        try {
-            Document doc = Jsoup.connect("https://www.boc.cn/sourcedb/whpj").get();
-            Log.i(TAG, "run: " + doc.title());
-            Elements tables = doc.getElementsByTag("table");
-            Element table = tables.get(1);
-            Elements trs = table.getElementsByTag("tr");
+        Date now=new Date();
+        if(now.toString().equals(updateTime)){
+            try {
+                //前提是程序不关闭
+                Thread.sleep(10000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            try {
+                Document doc = Jsoup.connect("https://www.boc.cn/sourcedb/whpj").get();
+                Log.i(TAG, "run: " + doc.title());
+                Elements tables = doc.getElementsByTag("table");
+                Element table = tables.get(1);
+                Elements trs = table.getElementsByTag("tr");
 //            int count=0;
-            for (Element tr : trs) {
+                for (Element tr : trs) {
 //                count++;
 //                Log.i(TAG, "run: "+count);
 //                Elements tds = tr.getElementsByTag("td");
@@ -102,34 +112,41 @@ public class huilv2 extends AppCompatActivity implements Runnable {
 //
 //                    Log.i(TAG, "run: " + str1 +"=====>>" +str2);
 //                }
-                Element trUS = trs.get(26);
-                Element trJANP = trs.get(12);
-                Element trHK = trs.get(9);
-                Element trEUR = trs.get(8);
+                    Element trUS = trs.get(26);
+                    Element trJANP = trs.get(12);
+                    Element trHK = trs.get(9);
+                    Element trEUR = trs.get(8);
 
-                Elements tdsUS = trUS.getElementsByTag("td");
-                Elements tdsJANP = trJANP.getElementsByTag("td");
-                Elements tdsHK = trHK.getElementsByTag("td");
-                Elements tdsEUR = trEUR.getElementsByTag("td");
+                    Elements tdsUS = trUS.getElementsByTag("td");
+                    Elements tdsJANP = trJANP.getElementsByTag("td");
+                    Elements tdsHK = trHK.getElementsByTag("td");
+                    Elements tdsEUR = trEUR.getElementsByTag("td");
 
-                String rateUS = tdsUS.get(5).text();
-                String rateJANP = tdsJANP.get(5).text();
-                String rateHK = tdsHK.get(5).text();
-                String rateEUR = tdsEUR.get(5).text();
+                    String rateUS = tdsUS.get(5).text();
+                    String rateJANP = tdsJANP.get(5).text();
+                    String rateHK = tdsHK.get(5).text();
+                    String rateEUR = tdsEUR.get(5).text();
 
-                musd = Float.parseFloat(rateUS) / 100;
-                mjanp = Float.parseFloat(rateJANP) / 100;
-                mhk = Float.parseFloat(rateHK) / 100;
-                meur = Float.parseFloat(rateEUR) / 100;
+                    musd = Float.parseFloat(rateUS) / 100;
+                    mjanp = Float.parseFloat(rateJANP) / 100;
+                    mhk = Float.parseFloat(rateHK) / 100;
+                    meur = Float.parseFloat(rateEUR) / 100;
 
-                Log.i(TAG, "run: " + "美元汇率：" + rateUS + "\n 欧元汇率 ： " + rateEUR + "\n 港币汇率 ：" + rateHK + "\n 日元汇率" + rateJANP);
-                //需要全部除以100；
+                    Log.i(TAG, "run: " + "美元汇率：" + rateUS + "\n 欧元汇率 ： " + rateEUR + "\n 港币汇率 ：" + rateHK + "\n 日元汇率" + rateJANP);
+                    //需要全部除以100；
 
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace();
             }
 
-        } catch (IOException e) {
-            e.printStackTrace();
         }
+        else{
+            Log.i(TAG, "run: 今日日期："+now.toString()+"已经更新");
+
+        }
+
     }
 
     public void open(View v) {
@@ -138,6 +155,10 @@ public class huilv2 extends AppCompatActivity implements Runnable {
         config.putExtra("eur_save", meur);
         config.putExtra("janp_save", mjanp);
         config.putExtra("hk_save", mhk);
+        Date today=new Date();
+        updateTime=today.toString();
+        config.putExtra("update",updateTime);
+        Log.i(TAG, "open: update"+updateTime);
         Log.i(TAG, "run: float" + musd);
         Log.i(TAG, "run: float" + meur);
         Log.i(TAG, "run: float" + mjanp);
@@ -204,6 +225,8 @@ public class huilv2 extends AppCompatActivity implements Runnable {
             meur = bd1.getFloat("eur", 2.0f);
             mhk = bd1.getFloat("hk", 3.0f);
             mjanp = bd1.getFloat("janp", 4.0f);
+
+
         }
         super.onActivityResult(requestCode, resultCode, data);
 
