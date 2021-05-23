@@ -56,7 +56,7 @@ public class FirstListActivity extends ListActivity  implements Runnable {
         Log.i(TAG, "run: run方法成功运行");
         List<String> data = new ArrayList<String>();
         try {
-           
+           Thread.sleep(10000);
             Document doc = Jsoup.connect("https://www.boc.cn/sourcedb/whpj").get();
             Log.i(TAG, "run: " + doc.title());
             Elements tables = doc.getElementsByTag("table");
@@ -78,6 +78,8 @@ public class FirstListActivity extends ListActivity  implements Runnable {
         } catch (IOException e) {
             e.printStackTrace();
         } catch (NetworkOnMainThreadException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
         Message msg = new Message();
