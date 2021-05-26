@@ -12,7 +12,21 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Empty_try">
-        <activity android:name=".list3_jisuan">
+        <activity android:name=".list3_click">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".GridViewActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".list3_jisuan" android:theme="@style/Theme.AppCompat.Dialog.Alert" android:label="货币转换">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
